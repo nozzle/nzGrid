@@ -66,8 +66,8 @@ nzGrid is the first layout system that is truly responsive in every way. Instead
 Breakpoints can be changed like so:
 
 ```javascript
-module.controller('someController', function(nzGrid){
-	nzGrid.breaks = {
+module.config(function(nzGridConfig){
+	nzGridConfig.breaks = {
 		sm: 360, // anything greater than 360 will be considered "small"
 		md: 780, // anything greater than 780 will be considered "medium"
         lg: 1200, // anything greater than 1200 will be considered "large"
