@@ -157,7 +157,8 @@
                 md: 63,
                 lg: 75,
             },
-            fontSize: parseFloat(angular.element("body").css("font-size"))
+            fontSize: parseFloat(angular.element("body").css("font-size")),
+            throttle: throttle
         };
 
         return service;
