@@ -61,6 +61,7 @@ nzGrid is the first layout system that is truly responsive in every way. Instead
 		</div>
 	</div>
 </div>
+```
 
 ## Config
 
