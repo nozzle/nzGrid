@@ -207,7 +207,7 @@
                                 el.addClass('row-sm');
                                 return;
                             }
-                            if (width <= nzGrid.breaks.ld) {
+                            if (width <= nzGrid.breaks.lg) {
                                 el.addClass('row-md');
                                 return;
                             }
