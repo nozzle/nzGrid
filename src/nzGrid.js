@@ -10,7 +10,6 @@
                 md: 780,
                 lg: 1200,
             },
-            fontSize: parseFloat(angular.element("body").css("font-size")),
             throttle: throttle
         };
 
