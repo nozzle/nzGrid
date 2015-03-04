@@ -1,0 +1,53 @@
+
+vendor-prefixes ?= webkit moz official
+support-for-ie = false
+@import 'nib/vendor'
+
+$sm-viewport = 48em
+$md-viewport = 62em
+$lg-viewport = 75em
+
+$gutter-width = 1rem
+$outer-margin = 2rem
+$gutter-compensation = $gutter-width / 2 * -1
+$half-gutter-width = $gutter-width / 2
+$screen-xs-min = 30em
+$screen-sm-min = 48em
+$screen-md-min = 62em
+$screen-lg-min = 75em
+$container-sm = 45rem + $gutter-width
+$container-md = 60rem + $gutter-width
+$container-lg = 70rem + $gutter-width
+
+@import 'xs-viewport'
+@import 'sm-viewport'
+@import 'md-viewport'
+@import 'lg-viewport'
+
+.container-fluid
+	margin-right: auto
+	margin-left: auto
+	padding-right: $outer-margin
+	padding-left: $outer-margin
+
+.row
+	xs-viewport()
+.row-sm
+	sm-viewport()
+.row-md
+	md-viewport()
+.row-lg
+	lg-viewport()
+
+
+@media only screen and (min-width: $sm-viewport)
+	.container
+		width: $container-sm
+		
+@media only screen and (min-width: $md-viewport)
+	.container
+		width: $container-md
+
+@media only screen and (min-width: $lg-viewport)
+	.container
+		width: $container-md

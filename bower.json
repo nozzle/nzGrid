@@ -1,0 +1,25 @@
+{
+    "name": "nz-grid",
+    "version": "0.9.0",
+    "main": ["./dist/nzGrid.min.css", "./dist/nzGrid.min.js"],
+    "homepage": "https://github.com/nozzle/nzGrid",
+    "authors": [
+        "Tanner Linsley <tannerlinsley@gmail.com>"
+    ],
+    "description": "An intelligent layout engine built for Angular",
+    "keywords": [
+        "angularjs",
+        "angular",
+        "grid",
+        "flexbox"
+        "layout"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ]
+}
