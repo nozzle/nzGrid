@@ -1,7 +1,7 @@
 {
-    "name": "nz-animate",
-    "version": "0.9.1",
-    "description": "Sickly simple animations and staggering for Angular",
+    "name": "nz-grid",
+    "version": "0.9.0",
+    "description": "An intelligent layout engine built for Angular",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
