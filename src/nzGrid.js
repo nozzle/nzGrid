@@ -3,12 +3,20 @@
 
     var module = angular.module('nzGrid', []);
 
-    module.factory('nzGrid', function($timeout) {
+    module.value('nzGridConfig', {
+        breaks: {
+            sm: 360,
+            md: 780,
+            lg: 1200,
+        },
+    });
+
+    module.factory('nzGrid', function($timeout, nzGridConfig) {
         var service = {
             breaks: {
-                sm: 360,
-                md: 780,
-                lg: 1200,
+                sm: nzGridConfig.breaks.sm,
+                md: nzGridConfig.breaks.md,
+                lg: nzGridConfig.breaks.lg,
             },
             throttle: throttle
         };
