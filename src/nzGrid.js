@@ -101,9 +101,9 @@
 
                         var colSizes = {};
 
-                        colSizes.xs = sizes[0] ? sizes[0] : colSizes.sm;
-                        colSizes.sm = sizes[1] ? sizes[1] : (colSizes.xs ? colSizes.xs : colSizes.md);
-                        colSizes.md = sizes[2] ? sizes[2] : (colSizes.sm ? colSizes.sm : colSizes.lg);
+                        colSizes.xs = sizes[0] ? sizes[0] : 12;
+                        colSizes.sm = sizes[1] ? sizes[1] : colSizes.xs;
+                        colSizes.md = sizes[2] ? sizes[2] : colSizes.sm;
                         colSizes.lg = sizes[3] ? sizes[3] : colSizes.md;
 
                         angular.forEach(colSizes, function(size, key) {
