@@ -31,6 +31,17 @@ $container-lg = 70rem + $gutter-width
 	padding-left: $outer-margin
 
 .row
+	box-sizing: border-box
+	display: flex
+	flex: 0 1 auto
+	flex-direction: row
+	flex-wrap: wrap
+	margin-right: $gutter-compensation
+	margin-left: $gutter-compensation
+
+	&.reverse
+		flex-direction: row-reverse
+.row-xs
 	xs-viewport()
 .row-sm
 	sm-viewport()
