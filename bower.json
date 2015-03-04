@@ -11,7 +11,7 @@
         "angularjs",
         "angular",
         "grid",
-        "flexbox"
+        "flexbox",
         "layout"
     ],
     "license": "MIT",
