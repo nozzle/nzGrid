@@ -201,6 +201,7 @@
                             removeAll();
 
                             if (width < nzGrid.breaks.sm) {
+                                el.addClass('row-xs');
                                 return;
                             }
                             if (width < nzGrid.breaks.md) {
@@ -217,7 +218,7 @@
                         }
 
                         function removeAll() {
-                            el.removeClass('row-sm row-md row-lg');
+                            el.removeClass('row-xs row-sm row-md row-lg');
                         }
                     }
                 };
