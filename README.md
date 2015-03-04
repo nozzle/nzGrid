@@ -5,8 +5,6 @@ nzGrid is the first layout system that is truly responsive in every way. Instead
 
 *nzGrid is built on [Flexbox Grid](https://github.com/kristoferjoseph/flexboxgrid) and [stylus](https://github.com/LearnBoost/stylus).*
 
-## [Awesome Demo](http://nozzle.github.io/nzGrid/)
-
 ## Installation
 
 1.	`$ bower/npm install nz-grid --save`
