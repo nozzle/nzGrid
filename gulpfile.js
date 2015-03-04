@@ -10,7 +10,6 @@ var concat = require('gulp-concat');
 var ngAnnotate = require('gulp-ng-annotate');
 var tap = require('gulp-tap');
 var hjson = require('hjson');
-var del = require('del');
 var nib = require('nib');
 
 
@@ -21,8 +20,7 @@ gulp.task('concat', concatTask);
 gulp.task('uglify', uglifyTask);
 gulp.task('js', ['concat', 'uglify']);
 gulp.task('watch', watchTask);
-gulp.task('build', ['stylus', 'js', 'clean']);
-gulp.task('clean', cleanTask);
+gulp.task('build', ['stylus', 'js']);
 gulp.task('default', ['build', 'watch']);
 
 function stylusTask() {
@@ -66,13 +64,6 @@ function uglifyTask() {
         .pipe(uglify())
         .pipe(rename("nzGrid.min.js"))
         .pipe(gulp.dest('./dist/'));
-}
-
-function cleanTask() {
-    return gulp.task('clean:mobile', function(cb) {
-        del('./.temp/');
-    });
-
 }
 
 function watchTask() {

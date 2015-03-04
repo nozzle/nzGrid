@@ -35,7 +35,7 @@
             restrict: "EA",
             compile: function(el, attributes) {
                 return {
-                    pre: function(scope, el, attributes, controller, transcludeFn) {
+                    pre: function(scope, el, attributes) {
                         el.addClass('row');
                     },
                     post: function(scope, el, attrs) {
@@ -44,7 +44,7 @@
 
                         addResizeListener(el[0], throttleResize);
 
-                        element.on('$destroy', function() {
+                        el.on('$destroy', function() {
                             removeResizeListener(el[0], throttleResize);
                         });
 
@@ -83,14 +83,14 @@
             restrict: "EA",
             transclude: true,
             template: '<div class="col-inner" ng-transclude></div>',
-            compile: function(element, attributes) {
+            compile: function(el, attrs) {
                 return {
-                    pre: function(scope, element, attributes, controller, transcludeFn) {
+                    pre: function(scope, el, attrs) {
 
-                        var sizes = attributes.col.length ? attributes.col.split('-') : false;
+                        var sizes = attrs.col.length ? attrs.col.split('-') : false;
 
                         if (!sizes) {
-                            element.addClass('col-xs');
+                            el.addClass('col-xs');
                             return;
                         }
 
@@ -106,7 +106,7 @@
                         colSizes.lg = sizes[3] ? sizes[3] : colSizes.md;
 
                         angular.forEach(colSizes, function(size, key) {
-                            element.addClass('col-' + key + '-' + size);
+                            el.addClass('col-' + key + '-' + size);
                         });
                     }
                 };
