@@ -56,6 +56,11 @@ function concatTask() {
 }
 
 function uglifyTask() {
+
+    gulp.src('./.temp/all.js')
+        .pipe(rename("nzGrid.js"))
+        .pipe(gulp.dest('./dist/'));
+
     return gulp.src('./.temp/all.js')
         .pipe(ngAnnotate())
         .pipe(uglify())
