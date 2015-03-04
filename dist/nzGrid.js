@@ -237,7 +237,7 @@
                         var sizes = attrs.col.length ? attrs.col.split('-') : false;
 
                         if (!sizes) {
-                            el.addClass('col-xs');
+                            el.addClass('col-xs col-sm col-md col-lg');
                             return;
                         }
 
