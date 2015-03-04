@@ -40,7 +40,7 @@
                     },
                     post: function(scope, el, attrs) {
 
-                        var throttleResize = nzGrid.throttle(resize, 16);
+                        var throttleResize = nzGrid.throttle(resize, 50);
 
                         addResizeListener(el[0], throttleResize);
 
