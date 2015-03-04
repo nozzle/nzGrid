@@ -3,7 +3,7 @@
 
     var module = angular.module('nzGrid', []);
 
-    module.value('nzGridConfig', {
+    module.constant('nzGridConfig', {
         breaks: {
             sm: 360,
             md: 780,
