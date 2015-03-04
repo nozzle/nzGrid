@@ -5,7 +5,9 @@ var gutil = require('gulp-util');
 var plumber = require('gulp-plumber');
 var uglify = require('gulp-uglifyjs');
 var stylus = require('gulp-stylus');
-var stylus = require('gulp-concat');
+var autoprefixer = require('autoprefixer-stylus');
+var concat = require('gulp-concat');
+var ngAnnotate = require('gulp-ng-annotate');
 var tap = require('gulp-tap');
 var hjson = require('hjson');
 var del = require('del');
@@ -15,8 +17,8 @@ var nib = require('nib');
 var config;
 
 gulp.task('stylus', stylusTask);
-gulp.task('concat', jsTask);
-gulp.task('uglify', jsTask);
+gulp.task('concat', concatTask);
+gulp.task('uglify', uglifyTask);
 gulp.task('js', ['concat', 'uglify']);
 gulp.task('watch', watchTask);
 gulp.task('build', ['stylus', 'js', 'clean']);
@@ -27,7 +29,7 @@ function stylusTask() {
 
     gulp.src('./src/nzGrid.styl')
         .pipe(stylus({
-            use: [nib()],
+            use: [nib(), autoprefixer()],
             compress: false,
             "include css": true
         }))
@@ -44,7 +46,7 @@ function stylusTask() {
         .pipe(gulp.dest('./dist/'));
 }
 
-function concat() {
+function concatTask() {
     return gulp.src([
             './node_modules/javascript-detect-element-resize/detect-element-resize.js',
             './src/nzGrid.js',
@@ -53,7 +55,7 @@ function concat() {
         .pipe(gulp.dest('./.temp/'));
 }
 
-function uglify() {
+function uglifyTask() {
     return gulp.src('./.temp/all.js')
         .pipe(ngAnnotate())
         .pipe(uglify())
