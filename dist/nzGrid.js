@@ -153,9 +153,9 @@
     module.factory('nzGrid', function($timeout) {
         var service = {
             breaks: {
-                sm: 48,
-                md: 63,
-                lg: 75,
+                sm: 360,
+                md: 780,
+                lg: 1200,
             },
             fontSize: parseFloat(angular.element("body").css("font-size")),
             throttle: throttle
@@ -187,7 +187,7 @@
                     },
                     post: function(scope, el, attrs) {
 
-                        var throttleResize = nzGrid.throttle(resize, 16);
+                        var throttleResize = nzGrid.throttle(resize, 50);
 
                         addResizeListener(el[0], throttleResize);
 
@@ -197,18 +197,18 @@
 
                         function resize() {
 
-                            var width = el.width() / nzGrid.fontSize;
+                            var width = el.width();
                             removeAll();
 
-                            if (width < nzGrid.breaks.sm) {
+                            if (width <= nzGrid.breaks.sm) {
                                 el.addClass('row-xs');
                                 return;
                             }
-                            if (width < nzGrid.breaks.md) {
+                            if (width <= nzGrid.breaks.md) {
                                 el.addClass('row-sm');
                                 return;
                             }
-                            if (width < nzGrid.breaks.lg) {
+                            if (width <= nzGrid.breaks.ld) {
                                 el.addClass('row-md');
                                 return;
                             }
