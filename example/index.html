@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>nzGrid Demo</title>
+    <link rel="stylesheet" type="text/css" href="../dist/nzGrid.min.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body ng-app="demo" ng-controller="mainController">
+
+    <div class="viewport pad">
+        <div row>
+            <div col>
+                <h1>nzGrid</h1>
+                <h3>An intelligent layout engine built for Angular</h3>
+                <a href="http://github.com/nozzle/nzGrid" class="github">
+                    View on Github
+                </a>
+                <div row>
+                    <div col="12-4-3" class="pad">
+                        <h3>Responsive</h3>
+                        nzGrid is the first layout system that is truly responsive in every way.
+                    </div>
+                    <div col="12-4-3" class="pad">
+                        <h3>Relative</h3>
+                        Instead of depending on media queries and viewport dimensions, responsive calculations and classes are made relative to their containing element.
+                    </div>
+                    <div col="12-4-3" class="pad">
+                        <h3>Painless</h3>
+                        This takes the pain out of nested layouts, and is a beautiful way to use a grid in Angular.
+                    </div>
+                    <div col="12--3" class="pad">
+                        <h3>Lean &amp; Powerful</h3>
+                        <em>nzGrid is built on the amazing <a href="https://github.com/kristoferjoseph/flexboxgrid">Flexbox Grid</a> and <a href="https://github.com/LearnBoost/stylus">stylus</a>.</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div row>
+            <div col="12-6-4-3" valign="t-m-b-t" dist="even"></div>
+            <div col="12-6-4-3"></div>
+            <div col="12--4-3"></div>
+            <div col="12---3"></div>
+        </div>
+        <div row>
+            <div col class="pad">
+                <h3>Installation</h3>
+                <div row>
+                    <div col="12-4" class="pad">
+                        <h3>1.</h3>
+                        <code>$ bower/npm install nz-grid --save</code>
+                    </div>
+                    <div col="12-4" class="pad">
+                        <h3>2.</h3>
+                        Include dist/nzGrid.min.js and dist/nzGrid.min.css
+                    </div>
+                    <div col="12-4" class="pad">
+                        <h3>3.</h3>
+                        Add nzGrid to your app's dependencies.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div row>
+            <div col class="pad">
+                <h3>Simple Markup &amp; Usage</h3>
+                <div row>
+                    <div col="12-6-4-2" class="pad">
+                        <code>col</code>'s must be defined as direct children of <code>row</code>'s</li>
+                    </div>
+                    <div col="12-6-4-2" class="pad">
+                        <code>row</code>'s can be infinitely nested inside of <code>col</code>'s</li>
+                    </div>
+                    <div col="12-6-4-2" class="pad">
+                        Breakpoints are defined like so: <code>col="xs-sm-md-lg"</code>, and inherited upwards. Therefore,<code>col="12--4" == col="12-12-4-4"</code>.</li>
+                    </div>
+                    <div col="12-6-4-2" class="pad">
+                        Breakpoints are backwards compatible with classic grid style classes <code>class="col-sm-12 ..."</code>
+                        </li>
+                    </div>
+                    <div col="12-6-4-2" class="pad">
+                        If no breakbpoints are specified eg. <code>col</code>, it will result in equally distributed columns.</li>
+                    </div>
+                    <div col="12-6-4-6" class="pad">
+                        offset, reorder, align examples can be found at Flexbox Grid, and are likewise implemented as a class... for now ;)</li>
+                    </div>
+                </div>
+                <div row>
+                    <div col class="pad">
+                        For code examples, take a look at the <a href="http://github.com/nozzle/nzGrid">Readme on Github!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div row>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+            <div col="12-6-2-1"></div>
+        </div>
+        <div row>
+            <div col class="pad">
+                <h3>Nested Grids that bahave themselves!</h3>
+                <p>In other layout libraries, columns are calculated on the viewport dimensions, and this makes nesting multiple grids almost impossible to manage. Instead of using the viewport, each row is self aware of it's size and knows how to keep it's kids in line! So now you can nest grids and structure infinitely and never get weird breakpoint pains.</p>
+                <div row>
+                    <div col="12--7-4">
+                        <div row class="middle-xs middle-sm middle-md middle-lg">
+                            <div col="12-4-2">
+                                <div row>
+                                    <div col="12-6-4">
+                                        <img src="https://38.media.tumblr.com/d7fe866833ea5e04dba668c6579f219d/tumblr_mimv6bTEbv1rjuwwpo1_500.gif" />
+                                    </div>
+                                    <div col="12-6-4">
+                                        <div row>
+                                            <div col></div>
+                                            <div col></div>
+                                            <div col></div>
+                                            <div col></div>
+                                            <div col></div>
+                                        </div>
+                                    </div>
+                                    <div col="12--4">
+                                        <div row>
+                                            <div col></div>
+                                            <div col></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div col="12-4-2">
+                                <div row>
+                                    <div col></div>
+                                    <div col></div>
+                                </div>
+                            </div>
+                            <div col="12-1-2">
+                                <div row>
+                                    <div col></div>
+                                </div>
+                                <div row>
+                                    <div col></div>
+                                    <div col></div>
+                                </div>
+                                <div row>
+                                    <div col></div>
+                                    <div col></div>
+                                    <div col></div>
+                                </div>
+                            </div>
+                            <div col="12-1-2">
+                            </div>
+                            <div col="12-2-4">
+                            </div>
+                        </div>
+                    </div>
+                    <div col="12--5-8">
+                        <div row>
+                            <div col="12-6-4"></div>
+                            <div col="12-6-4"></div>
+                            <div col="12--4"></div>
+                            <div col="12-6-4"></div>
+                            <div col="6-6-4"></div>
+                            <div col="6--4"></div>
+                        </div>
+                    </div>
+                    <div col="12">
+                        <div row>
+                            <div col="12-6-4"></div>
+                            <div col="12-6-4"></div>
+                            <div col="12--4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+    <script type="text/javascript" src="../dist/nzGrid.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+
+</body>
+
+</html>

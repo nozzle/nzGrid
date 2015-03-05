@@ -18,9 +18,11 @@ var config;
 gulp.task('stylus', stylusTask);
 gulp.task('concat', concatTask);
 gulp.task('uglify', uglifyTask);
-gulp.task('js', ['concat', 'uglify']);
 gulp.task('watch', watchTask);
+
+gulp.task('js', ['concat', 'uglify']);
 gulp.task('build', ['stylus', 'js']);
+
 gulp.task('default', ['build', 'watch']);
 
 function stylusTask() {
@@ -28,17 +30,14 @@ function stylusTask() {
     gulp.src('./src/nzGrid.styl')
         .pipe(stylus({
             use: [nib(), autoprefixer()],
-            compress: false,
-            "include css": true
         }))
         .pipe(rename("nzGrid.css"))
         .pipe(gulp.dest('./dist/'));
 
     return gulp.src('./src/nzGrid.styl')
         .pipe(stylus({
-            use: [nib()],
+            use: [nib(), autoprefixer()],
             compress: true,
-            "include css": true
         }))
         .pipe(rename("nzGrid.min.css"))
         .pipe(gulp.dest('./dist/'));
@@ -49,17 +48,13 @@ function concatTask() {
             './node_modules/javascript-detect-element-resize/detect-element-resize.js',
             './src/nzGrid.js',
         ])
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('./.temp/'));
+        .pipe(concat('nzGrid.js'))
+        .pipe(gulp.dest('./dist/'));
 }
 
 function uglifyTask() {
 
-    gulp.src('./.temp/all.js')
-        .pipe(rename("nzGrid.js"))
-        .pipe(gulp.dest('./dist/'));
-
-    return gulp.src('./.temp/all.js')
+    return gulp.src('./dist/nzGrid.js')
         .pipe(ngAnnotate())
         .pipe(uglify())
         .pipe(rename("nzGrid.min.js"))
@@ -67,5 +62,5 @@ function uglifyTask() {
 }
 
 function watchTask() {
-    gulp.watch(['./**.styl', './**.js'], ['build']);
+    gulp.watch(['./src/**'], ['build']);
 }

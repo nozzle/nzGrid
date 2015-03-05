@@ -11,28 +11,28 @@
         },
     });
 
-    module.factory('nzGrid', function($timeout, nzGridConfig) {
+    module.factory('nzGrid', function(nzGridConfig) {
         var service = {
             breaks: {
                 sm: nzGridConfig.breaks.sm,
                 md: nzGridConfig.breaks.md,
                 lg: nzGridConfig.breaks.lg,
             },
-            throttle: throttle
+            debounce: debounce
         };
 
         return service;
 
-        function throttle(callback, limit) {
-            var wait = false;
+        function debounce(callback, limit) {
+            var timeout = false;
             return function() {
-                if (!wait) {
-                    callback.call();
-                    wait = true;
-                    $timeout(function() {
-                        wait = false;
-                    }, limit);
+                if (timeout) {
+                    clearTimeout(timeout);
                 }
+                timeout = setTimeout(function() {
+                    timeout = false;
+                    callback.call();
+                }, limit);
             };
         }
     });
@@ -42,45 +42,49 @@
             restrict: "EA",
             compile: function(el, attributes) {
                 return {
-                    pre: function(scope, el, attributes) {
+                    pre: function(scope, el) {
                         el.addClass('row');
-                    },
-                    post: function(scope, el, attrs) {
+                        var debounceResize = nzGrid.debounce(resize, 50);
+                        var size;
 
-                        var throttleResize = nzGrid.throttle(resize, 50);
+                        resize();
 
-                        addResizeListener(el[0], throttleResize);
+                        addResizeListener(el[0], debounceResize);
 
                         el.on('$destroy', function() {
-                            removeResizeListener(el[0], throttleResize);
+                            removeResizeListener(el[0], debounceResize);
                         });
 
                         function resize() {
 
                             var width = el.width();
-                            removeAll();
+                            var newSize = detect();
 
-                            if (width <= nzGrid.breaks.sm) {
-                                el.addClass('row-xs');
-                                return;
-                            }
-                            if (width <= nzGrid.breaks.md) {
-                                el.addClass('row-sm');
-                                return;
-                            }
-                            if (width <= nzGrid.breaks.lg) {
-                                el.addClass('row-md');
-                                return;
-                            }
-                            el.addClass('row-lg');
-                            return;
 
+                            if (newSize != size) {
+                                removeAll();
+                                size = newSize;
+                                el.addClass(size);
+                            }
+
+                            function detect() {
+                                if (width <= nzGrid.breaks.sm) {
+                                    return 'row-xs';
+                                }
+                                if (width <= nzGrid.breaks.md) {
+                                    return 'row-sm';
+                                }
+                                if (width <= nzGrid.breaks.lg) {
+                                    return 'row-md';
+                                }
+                                return 'row-lg';
+                            }
                         }
 
                         function removeAll() {
                             el.removeClass('row-xs row-sm row-md row-lg');
                         }
-                    }
+                    },
                 };
             }
         };
@@ -90,15 +94,18 @@
         return {
             restrict: "EA",
             transclude: true,
+            replace: true,
             template: '<div class="col-inner" ng-transclude></div>',
             compile: function(el, attrs) {
                 return {
                     pre: function(scope, el, attrs) {
 
+                        el.wrap('<div>');
+
                         var sizes = attrs.col.length ? attrs.col.split('-') : false;
 
                         if (!sizes) {
-                            el.addClass('col-xs col-sm col-md col-lg');
+                            el.parent().addClass('col-xs col-sm col-md col-lg');
                             return;
                         }
 
@@ -114,9 +121,9 @@
                         colSizes.lg = sizes[3] ? sizes[3] : colSizes.md;
 
                         angular.forEach(colSizes, function(size, key) {
-                            el.addClass('col-' + key + '-' + size);
+                            el.parent().addClass('col-' + key + '-' + size);
                         });
-                    }
+                    },
                 };
             }
         };
