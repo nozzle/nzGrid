@@ -45,7 +45,7 @@ function stylusTask() {
 
 function concatTask() {
     return gulp.src([
-            './node_modules/javascript-detect-element-resize/detect-element-resize.js',
+            //'./node_modules/javascript-detect-element-resize/detect-element-resize.js',
             './src/nzGrid.js',
         ])
         .pipe(concat('nzGrid.js'))
