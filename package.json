@@ -1,6 +1,6 @@
 {
     "name": "nz-grid",
-    "version": "0.9.5",
+    "version": "0.9.55",
     "description": "An intelligent layout engine built for Angular",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"

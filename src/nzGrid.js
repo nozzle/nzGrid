@@ -66,8 +66,6 @@
 
                         function resize() {
 
-                            console.log('hello');
-
                             var width = el.width();
                             var newSize = detect();
 
@@ -165,7 +163,6 @@
                             reorders[3] = reorders[3] ? reorders[3] : false;
 
                             angular.forEach(reorders, function(reorder, i) {
-                                console.log(reorder);
                                 if (reorder) {
                                     if (reorder.indexOf('/') > -1) {
                                         var both = reorder.split('/');
@@ -188,7 +185,6 @@
     (function() {
         var attachEvent = document.attachEvent;
         var isIE = navigator.userAgent.match(/Trident/);
-        console.log(isIE);
         var requestFrame = (function() {
             var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
                 function(fn) {
