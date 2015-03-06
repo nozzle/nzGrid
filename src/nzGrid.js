@@ -11,7 +11,7 @@
         },
     });
 
-    module.factory('nzGrid', function(nzGridConfig) {
+    module.factory('nzGrid', function($timeout, nzGridConfig) {
         var service = {
             breaks: {
                 sm: nzGridConfig.breaks.sm,
@@ -27,9 +27,9 @@
             var timeout = false;
             return function() {
                 if (timeout) {
-                    clearTimeout(timeout);
+                    $timeout.cancel(timeout);
                 }
-                timeout = setTimeout(function() {
+                timeout = $timeout(function() {
                     timeout = false;
                     callback.call();
                 }, limit);
