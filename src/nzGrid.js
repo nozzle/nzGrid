@@ -18,21 +18,22 @@
                 md: nzGridConfig.breaks.md,
                 lg: nzGridConfig.breaks.lg,
             },
-            debounce: debounce
+            throttle: throttle
         };
 
         return service;
 
-        function debounce(callback, limit) {
-            var timeout = false;
+        function throttle(callback, limit) {
+            var waiting = [],
+                id = Date.now();
             return function() {
-                if (timeout) {
-                    $timeout.cancel(timeout);
+                if (!waiting[id]) {
+                    waiting[id] = true;
+                    $timeout(function() {
+                        waiting[id] = false;
+                        callback();
+                    }, limit);
                 }
-                timeout = $timeout(function() {
-                    timeout = false;
-                    callback.call();
-                }, limit);
             };
         }
     });
@@ -44,35 +45,37 @@
                 return {
                     pre: function(scope, el) {
                         // Vars
-                        var size;
+                        scope.size = '';
 
                         // Add the row class
                         el.addClass('row');
 
                         // Make the Debouncer
-                        var debounceResize = nzGrid.debounce(resize, 50);
+                        var throttleResize = nzGrid.throttle(resize, 250);
 
                         // Init the first resize
                         resize();
 
                         // Add the resize listeners
-                        addResizeListener(el[0], debounceResize);
+                        window.nzGrid.addResizeListener(el[0], throttleResize);
 
                         // Cleanup crew
                         el.on('$destroy', function() {
-                            removeResizeListener(el[0], debounceResize);
+                            window.nzGrid.removeResizeListener(el[0], throttleResize);
                         });
 
                         function resize() {
+
+                            console.log('hello');
 
                             var width = el.width();
                             var newSize = detect();
 
 
-                            if (newSize != size) {
+                            if (newSize != scope.size) {
                                 removeAll();
-                                size = newSize;
-                                el.addClass(size);
+                                scope.size = newSize;
+                                el.addClass(scope.size);
                             }
 
                             function detect() {
@@ -180,4 +183,78 @@
             }
         };
     });
+
+    // Element Resize Events (Thanks to Daniel Buchner @csuwildcat)
+    (function() {
+        var attachEvent = document.attachEvent;
+        var isIE = navigator.userAgent.match(/Trident/);
+        console.log(isIE);
+        var requestFrame = (function() {
+            var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
+                function(fn) {
+                    return window.setTimeout(fn, 20);
+                };
+            return function(fn) {
+                return raf(fn);
+            };
+        })();
+
+        var cancelFrame = (function() {
+            var cancel = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame ||
+                window.clearTimeout;
+            return function(id) {
+                return cancel(id);
+            };
+        })();
+
+        function resizeListener(e) {
+            var win = e.target || e.srcElement;
+            if (win.__resizeRAF__) cancelFrame(win.__resizeRAF__);
+            win.__resizeRAF__ = requestFrame(function() {
+                var trigger = win.__resizeTrigger__;
+                trigger.__resizeListeners__.forEach(function(fn) {
+                    fn.call(trigger, e);
+                });
+            });
+        }
+
+        function objectLoad(e) {
+            this.contentDocument.defaultView.__resizeTrigger__ = this.__resizeElement__;
+            this.contentDocument.defaultView.addEventListener('resize', resizeListener);
+        }
+
+        window.nzGrid = {};
+
+        window.nzGrid.addResizeListener = function(element, fn) {
+            if (!element.__resizeListeners__) {
+                element.__resizeListeners__ = [];
+                if (attachEvent) {
+                    element.__resizeTrigger__ = element;
+                    element.attachEvent('onresize', resizeListener);
+                } else {
+                    if (getComputedStyle(element).position == 'static') element.style.position = 'relative';
+                    var obj = element.__resizeTrigger__ = document.createElement('object');
+                    obj.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+                    obj.__resizeElement__ = element;
+                    obj.onload = objectLoad;
+                    obj.type = 'text/html';
+                    if (isIE) element.appendChild(obj);
+                    obj.data = 'about:blank';
+                    if (!isIE) element.appendChild(obj);
+                }
+            }
+            element.__resizeListeners__.push(fn);
+        };
+
+        window.nzGrid.removeResizeListener = function(element, fn) {
+            element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1);
+            if (!element.__resizeListeners__.length) {
+                if (attachEvent) element.detachEvent('onresize', resizeListener);
+                else {
+                    element.__resizeTrigger__.contentDocument.defaultView.removeEventListener('resize', resizeListener);
+                    element.__resizeTrigger__ = !element.removeChild(element.__resizeTrigger__);
+                }
+            }
+        };
+    })();
 })();
