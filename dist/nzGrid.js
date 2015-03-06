@@ -190,14 +190,22 @@
             compile: function(el, attributes) {
                 return {
                     pre: function(scope, el) {
-                        el.addClass('row');
-                        var debounceResize = nzGrid.debounce(resize, 50);
+                        // Vars
                         var size;
 
+                        // Add the row class
+                        el.addClass('row');
+
+                        // Make the Debouncer
+                        var debounceResize = nzGrid.debounce(resize, 50);
+
+                        // Init the first resize
                         resize();
 
+                        // Add the resize listeners
                         addResizeListener(el[0], debounceResize);
 
+                        // Cleanup crew
                         el.on('$destroy', function() {
                             removeResizeListener(el[0], debounceResize);
                         });
@@ -247,33 +255,76 @@
                 return {
                     pre: function(scope, el, attrs) {
 
+                        // Wrap the element in a parent div
                         el.wrap('<div>');
 
-                        var sizes = attrs.col.length ? attrs.col.split('-') : false;
+                        // Vars
+                        var sizes = ['xs', 'sm', 'md', 'lg'];
+                        var cols = attrs.col.length ? attrs.col.split('-') : false;
+                        var offsets = attrs.offset ? (attrs.offset.length ? attrs.offset.split('-') : false) : [];
+                        var reorders = attrs.reorder ? (attrs.reorder.length ? attrs.reorder.split('-') : false) : [];
 
-                        if (!sizes) {
+
+                        // Equal Columns if not defined
+                        if (!cols.length) {
                             el.parent().addClass('col-xs col-sm col-md col-lg');
-                            return;
+                        } else {
+                            // Defaults
+                            cols[0] = cols[0] ? cols[0] : 12;
+                            cols[1] = cols[1] ? cols[1] : cols[0];
+                            cols[2] = cols[2] ? cols[2] : cols[1];
+                            cols[3] = cols[3] ? cols[3] : cols[2];
+
+                            // Add col Classes
+                            angular.forEach(cols, function(col, i) {
+                                if (col) {
+                                    el.parent().addClass('col-' + sizes[i] + '-' + col);
+                                }
+                            });
                         }
 
-                        for (var i = 0; i < sizes.length; i++) {
-                            sizes[i] = sizes[i].trim();
+
+                        // Offsets
+                        if (offsets.length) {
+                            offsets[0] = offsets[0] ? offsets[0] : false;
+                            offsets[1] = offsets[1] ? offsets[1] : false;
+                            offsets[2] = offsets[2] ? offsets[2] : false;
+                            offsets[3] = offsets[3] ? offsets[3] : false;
+
+                            angular.forEach(offsets, function(offset, i) {
+                                if (offset) {
+                                    el.parent().addClass('col-' + sizes[i] + '-offset-' + offset);
+                                }
+                            });
                         }
 
-                        var colSizes = {};
 
-                        colSizes.xs = sizes[0] ? sizes[0] : 12;
-                        colSizes.sm = sizes[1] ? sizes[1] : colSizes.xs;
-                        colSizes.md = sizes[2] ? sizes[2] : colSizes.sm;
-                        colSizes.lg = sizes[3] ? sizes[3] : colSizes.md;
 
-                        angular.forEach(colSizes, function(size, key) {
-                            el.parent().addClass('col-' + key + '-' + size);
-                        });
+
+                        // Reorders
+                        if (reorders.length) {
+                            reorders[0] = reorders[0] ? reorders[0] : false;
+                            reorders[1] = reorders[1] ? reorders[1] : false;
+                            reorders[2] = reorders[2] ? reorders[2] : false;
+                            reorders[3] = reorders[3] ? reorders[3] : false;
+
+                            angular.forEach(reorders, function(reorder, i) {
+                                console.log(reorder);
+                                if (reorder) {
+                                    if (reorder.indexOf('/') > -1) {
+                                        var both = reorder.split('/');
+                                        for (var x = 0; x < both.length; x++) {
+                                            el.parent().addClass(both + '-' + sizes[x]);
+                                        }
+                                    } else {
+                                        el.parent().addClass(reorder + '-' + sizes[i]);
+                                    }
+                                }
+                            });
+                        }
                     },
                 };
             }
         };
     });
-
 })();

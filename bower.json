@@ -1,6 +1,6 @@
 {
     "name": "nz-grid",
-    "version": "0.9.3",
+    "version": "0.9.4",
     "main": ["./dist/nzGrid.min.css", "./dist/nzGrid.min.js"],
     "homepage": "https://github.com/nozzle/nzGrid",
     "authors": [
