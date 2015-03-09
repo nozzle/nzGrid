@@ -97,9 +97,7 @@
     module.directive("col", function() {
         return {
             restrict: "EA",
-            transclude: true,
             replace: true,
-            template: '<div class="col-inner" ng-transclude></div>',
             link: function(scope, el, attrs) {
 
                 // Wrap the element in a parent div
