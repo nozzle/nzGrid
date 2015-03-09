@@ -67,11 +67,6 @@
                     var width = el.width();
                     var newSize = detect();
 
-                    if (angular.isDefined(attrs.test)) {
-                        console.log(width, newSize, size);
-                    }
-
-
                     if (newSize != size) {
                         removeAll();
                         size = newSize;
