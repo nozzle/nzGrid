@@ -38,7 +38,7 @@
         }
     });
 
-    module.directive("row", function(nzGrid) {
+    module.directive("row", function(nzGrid, $timeout, $interval) {
         return {
             restrict: "EA",
             link: function(scope, el, attrs) {
@@ -63,11 +63,16 @@
                     });
                 }
 
-                // Init the first resize
-                resize();
-
                 // Add the resize listeners
                 window.nzGrid.addResizeListener(el[0], throttleResize);
+
+                // Init the first resize for a bit
+                resize();
+                var starter = $interval(resize, 400);
+                $timeout(function() {
+                    $interval.cancel(starter);
+                }, 2000);
+
 
                 // Cleanup crew
                 el.on('$destroy', function() {
