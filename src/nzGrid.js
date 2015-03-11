@@ -49,7 +49,7 @@
                 el.addClass('row');
 
                 // Make the Debouncer
-                var throttleResize = nzGrid.throttle(resize, 250);
+                var throttleResize = nzGrid.throttle(resize, 32);
 
                 // Align
                 var sizes = ['xs', 'sm', 'md', 'lg'];
@@ -76,7 +76,7 @@
 
                 function resize() {
 
-                    var width = el.width();
+                    var width = el[0].offsetWidth;
                     var newSize = detect();
 
                     if (newSize != size) {

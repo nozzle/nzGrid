@@ -49,7 +49,19 @@
                 el.addClass('row');
 
                 // Make the Debouncer
-                var throttleResize = nzGrid.throttle(resize, 250);
+                var throttleResize = nzGrid.throttle(resize, 32);
+
+                // Align
+                var sizes = ['xs', 'sm', 'md', 'lg'];
+                var aligns = attrs.align ? (attrs.align.length ? attrs.align.split('-') : false) : [];
+                if (aligns.length) {
+
+                    angular.forEach(aligns, function(align, i) {
+                        if (align) {
+                            el.addClass(align + '-' + sizes[i]);
+                        }
+                    });
+                }
 
                 // Init the first resize
                 resize();
@@ -64,7 +76,7 @@
 
                 function resize() {
 
-                    var width = el.width();
+                    var width = el[0].offsetWidth;
                     var newSize = detect();
 
                     if (newSize != size) {
@@ -131,10 +143,6 @@
 
                 // Offsets
                 if (offsets.length) {
-                    offsets[0] = offsets[0] ? offsets[0] : false;
-                    offsets[1] = offsets[1] ? offsets[1] : false;
-                    offsets[2] = offsets[2] ? offsets[2] : false;
-                    offsets[3] = offsets[3] ? offsets[3] : false;
 
                     angular.forEach(offsets, function(offset, i) {
                         if (offset) {
@@ -148,10 +156,6 @@
 
                 // Reorders
                 if (reorders.length) {
-                    reorders[0] = reorders[0] ? reorders[0] : false;
-                    reorders[1] = reorders[1] ? reorders[1] : false;
-                    reorders[2] = reorders[2] ? reorders[2] : false;
-                    reorders[3] = reorders[3] ? reorders[3] : false;
 
                     angular.forEach(reorders, function(reorder, i) {
                         if (reorder) {
