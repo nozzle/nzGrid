@@ -48,8 +48,10 @@
                 // Add the row class
                 el.addClass('row');
 
+
                 // Make the Debouncer
-                var throttleResize = nzGrid.throttle(resize, 32);
+                var tResize = nzGrid.throttle(resize, 32);
+
 
                 // Align
                 var sizes = ['xs', 'sm', 'md', 'lg'];
@@ -63,20 +65,29 @@
                     });
                 }
 
+
+                // Use col-xs or static attribute as the permanent size (awesome for performance)
+                if (angular.isDefined(attrs.static)) {
+                    if (!attrs.static) {
+                        el.addClass('row-xs');
+                        return;
+                    }
+                    el.addClass('row-' + attrs.static);
+                    return;
+                }
+
+
                 // Add the resize listeners
-                window.nzGrid.addResizeListener(el[0], throttleResize);
+                window.nzGrid.addResizeListener(el[0], tResize);
+                angular.element(window).on('resize', tResize);
 
                 // Init the first resize for a bit
-                resize();
-                var starter = $interval(resize, 400);
-                $timeout(function() {
-                    $interval.cancel(starter);
-                }, 2000);
-
+                $timeout(resize, 50);
 
                 // Cleanup crew
                 el.on('$destroy', function() {
-                    window.nzGrid.removeResizeListener(el[0], throttleResize);
+                    window.nzGrid.removeResizeListener(el[0], tResize);
+                    angular.element(window).off('resize', tResize);
                 });
 
                 function resize() {
@@ -179,76 +190,153 @@
         };
     });
 
-    // Element Resize Events (Thanks to Daniel Buchner @csuwildcat)
+    // Element Resize Events (Thanks to Sebastian Decima @sdecima)
     (function() {
-        var attachEvent = document.attachEvent;
-        var isIE = navigator.userAgent.match(/Trident/);
-        var requestFrame = (function() {
-            var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
-                function(fn) {
-                    return window.setTimeout(fn, 20);
+        var attachEvent = document.attachEvent,
+            stylesCreated = false;
+
+        if (!attachEvent) {
+            var requestFrame = (function() {
+                var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
+                    function(fn) {
+                        return window.setTimeout(fn, 20);
+                    };
+                return function(fn) {
+                    return raf(fn);
                 };
-            return function(fn) {
-                return raf(fn);
-            };
-        })();
+            })();
 
-        var cancelFrame = (function() {
-            var cancel = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame ||
-                window.clearTimeout;
-            return function(id) {
-                return cancel(id);
-            };
-        })();
+            var cancelFrame = (function() {
+                var cancel = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame ||
+                    window.clearTimeout;
+                return function(id) {
+                    return cancel(id);
+                };
+            })();
 
-        function resizeListener(e) {
-            var win = e.target || e.srcElement;
-            if (win.__resizeRAF__) cancelFrame(win.__resizeRAF__);
-            win.__resizeRAF__ = requestFrame(function() {
-                var trigger = win.__resizeTrigger__;
-                trigger.__resizeListeners__.forEach(function(fn) {
-                    fn.call(trigger, e);
-                });
-            });
+            /* Detect CSS Animations support to detect element display/re-attach */
+            var animation = false,
+                animationstring = 'animation',
+                keyframeprefix = '',
+                animationstartevent = 'animationstart',
+                domPrefixes = 'Webkit Moz O ms'.split(' '),
+                startEvents = 'webkitAnimationStart animationstart oAnimationStart MSAnimationStart'.split(' '),
+                pfx = ''; {
+                var elm = document.createElement('fakeelement');
+                if (elm.style.animationName !== undefined) {
+                    animation = true;
+                }
+
+                if (animation === false) {
+                    for (var i = 0; i < domPrefixes.length; i++) {
+                        if (elm.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+                            pfx = domPrefixes[i];
+                            animationstring = pfx + 'Animation';
+                            keyframeprefix = '-' + pfx.toLowerCase() + '-';
+                            animationstartevent = startEvents[i];
+                            animation = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            var animationName = 'resizeanim';
+            var animationKeyframes = '@' + keyframeprefix + 'keyframes ' + animationName + ' { from { opacity: 0; } to { opacity: 0; } } ';
+            var animationStyle = keyframeprefix + 'animation: 1ms ' + animationName + '; ';
         }
 
-        function objectLoad(e) {
-            this.contentDocument.defaultView.__resizeTrigger__ = this.__resizeElement__;
-            this.contentDocument.defaultView.addEventListener('resize', resizeListener);
+        function resetTriggers(element) {
+            var triggers = element.__resizeTriggers__,
+                expand = triggers.firstElementChild,
+                contract = triggers.lastElementChild,
+                expandChild = expand.firstElementChild;
+            contract.scrollLeft = contract.scrollWidth;
+            contract.scrollTop = contract.scrollHeight;
+            expandChild.style.width = expand.offsetWidth + 1 + 'px';
+            expandChild.style.height = expand.offsetHeight + 1 + 'px';
+            expand.scrollLeft = expand.scrollWidth;
+            expand.scrollTop = expand.scrollHeight;
+        };
+
+        function checkTriggers(element) {
+            return element.offsetWidth != element.__resizeLast__.width ||
+                element.offsetHeight != element.__resizeLast__.height;
+        }
+
+        function scrollListener(e) {
+            var element = this;
+            resetTriggers(this);
+            if (this.__resizeRAF__) cancelFrame(this.__resizeRAF__);
+            this.__resizeRAF__ = requestFrame(function() {
+                if (checkTriggers(element)) {
+                    element.__resizeLast__.width = element.offsetWidth;
+                    element.__resizeLast__.height = element.offsetHeight;
+                    element.__resizeListeners__.forEach(function(fn) {
+                        fn.call(element, e);
+                    });
+                }
+            });
+        };
+
+
+        function createStyles() {
+            if (!stylesCreated) {
+                //opacity:0 works around a chrome bug https://code.google.com/p/chromium/issues/detail?id=286360
+                var css = (animationKeyframes ? animationKeyframes : '') +
+                    '.resize-triggers { ' + (animationStyle ? animationStyle : '') + 'visibility: hidden; opacity: 0; } ' +
+                    '.resize-triggers, .resize-triggers > div, .contract-trigger:before { content: \" \"; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
+                    head = document.head || document.getElementsByTagName('head')[0],
+                    style = document.createElement('style');
+
+                style.type = 'text/css';
+                if (style.styleSheet) {
+                    style.styleSheet.cssText = css;
+                } else {
+                    style.appendChild(document.createTextNode(css));
+                }
+
+                head.appendChild(style);
+                stylesCreated = true;
+            }
         }
 
         window.nzGrid = {};
 
         window.nzGrid.addResizeListener = function(element, fn) {
-            if (!element.__resizeListeners__) {
-                element.__resizeListeners__ = [];
-                if (attachEvent) {
-                    element.__resizeTrigger__ = element;
-                    element.attachEvent('onresize', resizeListener);
-                } else {
+            if (attachEvent) element.attachEvent('onresize', fn);
+            else {
+                if (!element.__resizeTriggers__) {
                     if (getComputedStyle(element).position == 'static') element.style.position = 'relative';
-                    var obj = element.__resizeTrigger__ = document.createElement('object');
-                    obj.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
-                    obj.__resizeElement__ = element;
-                    obj.onload = objectLoad;
-                    obj.type = 'text/html';
-                    if (isIE) element.appendChild(obj);
-                    obj.data = 'about:blank';
-                    if (!isIE) element.appendChild(obj);
+                    createStyles();
+                    element.__resizeLast__ = {};
+                    element.__resizeListeners__ = [];
+                    (element.__resizeTriggers__ = document.createElement('div')).className = 'resize-triggers';
+                    element.__resizeTriggers__.innerHTML = '<div class="expand-trigger"><div></div></div>' +
+                        '<div class="contract-trigger"></div>';
+                    element.appendChild(element.__resizeTriggers__);
+                    resetTriggers(element);
+                    element.addEventListener('scroll', scrollListener, true);
+
+                    /* Listen for a css animation to detect element display/re-attach */
+                    animationstartevent && element.__resizeTriggers__.addEventListener(animationstartevent, function(e) {
+                        if (e.animationName == animationName)
+                            resetTriggers(element);
+                    });
                 }
+                element.__resizeListeners__.push(fn);
             }
-            element.__resizeListeners__.push(fn);
         };
 
         window.nzGrid.removeResizeListener = function(element, fn) {
-            element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1);
-            if (!element.__resizeListeners__.length) {
-                if (attachEvent) element.detachEvent('onresize', resizeListener);
-                else {
-                    element.__resizeTrigger__.contentDocument.defaultView.removeEventListener('resize', resizeListener);
-                    element.__resizeTrigger__ = !element.removeChild(element.__resizeTrigger__);
+            if (attachEvent) element.detachEvent('onresize', fn);
+            else {
+                element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1);
+                if (!element.__resizeListeners__.length) {
+                    element.removeEventListener('scroll', scrollListener);
+                    element.__resizeTriggers__ = !element.removeChild(element.__resizeTriggers__);
                 }
             }
-        };
+        }
     })();
 })();
