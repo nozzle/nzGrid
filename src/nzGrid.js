@@ -137,6 +137,10 @@
                 var offsets = attrs.offset ? (attrs.offset.length ? attrs.offset.split('-') : false) : [];
                 var reorders = attrs.reorder ? (attrs.reorder.length ? attrs.reorder.split('-') : false) : [];
 
+                // Cleanup crew
+                el.on('$destroy', function() {
+                    el.unwrap();
+                });
 
                 // Equal Columns if not defined
                 if (!cols.length) {
