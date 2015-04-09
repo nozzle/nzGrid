@@ -1,6 +1,11 @@
 (function() {
     'use strict';
 
+    window.nzGrid = angular.extend({
+        rowAttribute: 'row',
+        colAttribute: 'col',
+    }, window.nzGrid || {});
+
     var module = angular.module('nzGrid', []);
 
     module.constant('nzGridConfig', {
@@ -38,7 +43,7 @@
         }
     });
 
-    module.directive("row", function(nzGrid, $timeout, $interval) {
+    module.directive(window.nzGrid.rowAttribute, function(nzGrid, $timeout, $interval) {
         return {
             restrict: "EA",
             link: function(scope, el, attrs) {
@@ -122,7 +127,7 @@
         };
     });
 
-    module.directive("col", function() {
+    module.directive(window.nzGrid.colAttribute, function() {
         return {
             restrict: "EA",
             replace: true,
@@ -304,8 +309,6 @@
                 stylesCreated = true;
             }
         }
-
-        window.nzGrid = {};
 
         window.nzGrid.addResizeListener = function(element, fn) {
             if (attachEvent) element.attachEvent('onresize', fn);

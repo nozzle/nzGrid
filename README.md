@@ -75,6 +75,20 @@ module.config(function(nzGridConfig){
 });
 ```
 
+## Custom Directive Attributes
+
+If, for some reason, you are unable to use the directives `row` or `col` because they conflict with other directives, you may set custom directives prior to loading the nzGrid.js scripts like so:
+
+```
+<script>
+window.nzGrid = {
+	rowAttribute: 'myRow',	// defaults to row
+	colAttribute: 'myCol,	// defaults to col
+};
+</script>
+<script src=".../dist/nzGrid.min.js"></script>
+```
+
 ## Roadmap & Contributing
 
 1. Lessen the size of the build.
