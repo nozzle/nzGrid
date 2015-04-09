@@ -138,7 +138,7 @@
 
                 // Vars
                 var sizes = ['xs', 'sm', 'md', 'lg'];
-                var cols = attrs.col.length ? attrs.col.split('-') : false;
+                var cols = attrs[window.nzGrid.colAttribute].length ? attrs[window.nzGrid.colAttribute].split('-') : false;
                 var offsets = attrs.offset ? (attrs.offset.length ? attrs.offset.split('-') : false) : [];
                 var reorders = attrs.reorder ? (attrs.reorder.length ? attrs.reorder.split('-') : false) : [];
 
