@@ -106,6 +106,10 @@
                         el.addClass(size);
                     }
 
+                    if (attrs.nzGridBroadcast) {
+                        scope.$broadcast('nzGrid.resize');
+                    }
+
                     function detect() {
                         if (width <= nzGrid.breaks.sm) {
                             return 'row-xs';
