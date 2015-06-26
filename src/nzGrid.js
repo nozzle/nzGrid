@@ -43,93 +43,95 @@
         }
     });
 
-    module.directive(window.nzGrid.rowAttribute, function(nzGrid, $timeout, $interval) {
-        return {
-            restrict: "EA",
-            link: function(scope, el, attrs) {
-                // Vars
-                var size = '';
+    module.directive(window.nzGrid.rowAttribute, ['nzGrid', '$timeout', '$interval',
+        function(nzGrid, $timeout, $interval) {
+            return {
+                restrict: "EA",
+                link: function(scope, el, attrs) {
+                    // Vars
+                    var size = '';
 
-                // Add the row class
-                el.addClass('row');
-
-
-                // Make the Debouncer
-                var tResize = nzGrid.throttle(resize, 32);
+                    // Add the row class
+                    el.addClass('row');
 
 
-                // Align
-                var sizes = ['xs', 'sm', 'md', 'lg'];
-                var aligns = attrs.align ? (attrs.align.length ? attrs.align.split('-') : false) : [];
-                if (aligns.length) {
+                    // Make the Debouncer
+                    var tResize = nzGrid.throttle(resize, 32);
 
-                    angular.forEach(aligns, function(align, i) {
-                        if (align) {
-                            el.addClass(align + '-' + sizes[i]);
+
+                    // Align
+                    var sizes = ['xs', 'sm', 'md', 'lg'];
+                    var aligns = attrs.align ? (attrs.align.length ? attrs.align.split('-') : false) : [];
+                    if (aligns.length) {
+
+                        angular.forEach(aligns, function(align, i) {
+                            if (align) {
+                                el.addClass(align + '-' + sizes[i]);
+                            }
+                        });
+                    }
+
+
+                    // Use col-xs or static attribute as the permanent size (awesome for performance)
+                    if (angular.isDefined(attrs.static)) {
+                        if (!attrs.static) {
+                            el.addClass('row-xs');
+                            return;
                         }
-                    });
-                }
-
-
-                // Use col-xs or static attribute as the permanent size (awesome for performance)
-                if (angular.isDefined(attrs.static)) {
-                    if (!attrs.static) {
-                        el.addClass('row-xs');
+                        el.addClass('row-' + attrs.static);
                         return;
                     }
-                    el.addClass('row-' + attrs.static);
-                    return;
-                }
 
 
-                // Add the resize listeners
-                window.nzGrid.addResizeListener(el[0], tResize);
-                angular.element(window).on('resize', tResize);
+                    // Add the resize listeners
+                    window.nzGrid.addResizeListener(el[0], tResize);
+                    angular.element(window).on('resize', tResize);
 
-                // Init the first resize for a bit
-                $timeout(resize, 50);
+                    // Init the first resize for a bit
+                    $timeout(resize, 50);
 
-                // Cleanup crew
-                el.on('$destroy', function() {
-                    window.nzGrid.removeResizeListener(el[0], tResize);
-                    angular.element(window).off('resize', tResize);
-                });
+                    // Cleanup crew
+                    el.on('$destroy', function() {
+                        window.nzGrid.removeResizeListener(el[0], tResize);
+                        angular.element(window).off('resize', tResize);
+                    });
 
-                function resize() {
+                    function resize() {
 
-                    var width = el[0].offsetWidth;
-                    var newSize = detect();
+                        var width = el[0].offsetWidth;
+                        var newSize = detect();
 
-                    if (newSize != size) {
-                        removeAll();
-                        size = newSize;
-                        el.addClass(size);
+                        if (newSize != size) {
+                            removeAll();
+                            size = newSize;
+                            el.addClass(size);
+                        }
+
+                        if (attrs.nzGridBroadcast) {
+                            scope.$broadcast('nzGrid.resize');
+                        }
+
+                        function detect() {
+                            if (width <= nzGrid.breaks.sm) {
+                                return 'row-xs';
+                            }
+                            if (width <= nzGrid.breaks.md) {
+                                return 'row-sm';
+                            }
+                            if (width <= nzGrid.breaks.lg) {
+                                return 'row-md';
+                            }
+                            return 'row-lg';
+                        }
                     }
 
-                    if (attrs.nzGridBroadcast) {
-                        scope.$broadcast('nzGrid.resize');
+                    function removeAll() {
+                        el.removeClass('row-xs row-sm row-md row-lg');
                     }
-
-                    function detect() {
-                        if (width <= nzGrid.breaks.sm) {
-                            return 'row-xs';
-                        }
-                        if (width <= nzGrid.breaks.md) {
-                            return 'row-sm';
-                        }
-                        if (width <= nzGrid.breaks.lg) {
-                            return 'row-md';
-                        }
-                        return 'row-lg';
-                    }
-                }
-
-                function removeAll() {
-                    el.removeClass('row-xs row-sm row-md row-lg');
-                }
-            },
-        };
-    });
+                },
+            };
+        }
+    ]);
 
     module.directive(window.nzGrid.colAttribute, function() {
         return {
