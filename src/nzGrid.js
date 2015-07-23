@@ -16,7 +16,7 @@
         },
     });
 
-    module.factory('nzGrid', function($timeout, nzGridConfig) {
+    module.factory('nzGrid', ['nzGrid', function(nzGridConfig) {
         var service = {
             breaks: {
                 sm: nzGridConfig.breaks.sm,
@@ -34,17 +34,17 @@
             return function() {
                 if (!waiting[id]) {
                     waiting[id] = true;
-                    $timeout(function() {
+                    setTimeout(function() {
                         waiting[id] = false;
                         callback();
                     }, limit);
                 }
             };
         }
-    });
+    }]);
 
-    module.directive(window.nzGrid.rowAttribute, ['nzGrid', '$timeout', '$interval',
-        function(nzGrid, $timeout, $interval) {
+    module.directive(window.nzGrid.rowAttribute, ['nzGrid', '$timeout',
+        function(nzGrid, $timeout) {
             return {
                 restrict: "EA",
                 link: function(scope, el, attrs) {
