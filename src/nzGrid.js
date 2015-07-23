@@ -16,7 +16,7 @@
         },
     });
 
-    module.factory('nzGrid', ['nzGrid', function(nzGridConfig) {
+    module.factory('nzGrid', function(nzGridConfig) {
         var service = {
             breaks: {
                 sm: nzGridConfig.breaks.sm,
@@ -41,7 +41,7 @@
                 }
             };
         }
-    }]);
+    });
 
     module.directive(window.nzGrid.rowAttribute, ['nzGrid', '$timeout',
         function(nzGrid, $timeout) {
