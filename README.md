@@ -1,4 +1,6 @@
 # nzGrid
+
+[![Join the chat at https://gitter.im/nozzle/nzGrid](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nozzle/nzGrid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 An intelligent layout engine built for Angular.
 
 nzGrid is the first layout system that is truly responsive in every way. Instead of depending on media queries and viewport dimensions, responsive calculations and classes are made relative to their containing element.  This takes the pain out of nested layouts, and is a beautiful way to use a grid in Angular.
